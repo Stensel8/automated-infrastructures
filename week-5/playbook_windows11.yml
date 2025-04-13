@@ -1,0 +1,44 @@
+---
+- name: Configure Windows 11 Workstation
+  hosts: win11vm
+  gather_facts: yes
+  vars_prompt:
+    - name: username
+      prompt: "Enter username for Windows 11 workstation:"
+      private: no
+    - name: password
+      prompt: "Enter password for the user:"
+      private: yes
+    - name: groups
+      prompt: "Enter comma-separated groups for the user (e.g., finance, it, management):"
+      private: no
+  tasks:
+    - name: Create groups on Windows 11 workstation
+      ansible.windows.win_group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - finance
+        - it
+        - management
+
+    - name: Create user on Windows 11 workstation
+      ansible.windows.win_user:
+        name: "{{ username }}"
+        password: "{{ password }}"
+        groups: "{{ groups }}"
+
+    - name: Create directory C:\management on Windows 11 workstation
+      ansible.windows.win_file:
+        state: directory
+        path: C:\management
+
+    - name: Deploy configuration file from template
+      ansible.windows.win_template:
+        src: "{{ role_path }}/templates/windows_template.j2"
+        dest: C:\management\windows_file.txt
+
+    - name: Install Git via Chocolatey on Windows 11 workstation
+      ansible.windows.win_chocolatey:
+        name: git
+        state: present

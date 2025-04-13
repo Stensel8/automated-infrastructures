@@ -1,0 +1,50 @@
+# This playbook promotes a Windows server to a Domain Controller.
+# It installs the Active Directory Domain Services (AD DS) feature,
+# reboots the server as needed, and configures the domain settings.
+# Finally, it verifies the promotion by checking the domain role.
+# Ensure the variables (domain_name, domain_netbios_name, safe_mode_password) are set correctly.
+---
+- name: Promote server to Domain Controller
+  hosts: windows_servers
+  gather_facts: no
+  vars:
+    domain_name: Stensel.local
+    domain_netbios_name: Stensel
+    safe_mode_password: "P@ssw0rd"
+
+  tasks:
+    - name: Install AD-Domain-Services feature
+      ansible.windows.win_feature:
+        name: AD-Domain-Services
+        state: present
+        include_management_tools: yes
+
+    - name: Reboot after installing AD DS
+      ansible.windows.win_reboot:
+        msg: "Rebooting after installing AD DS"
+        pre_reboot_delay: 15
+        reboot_timeout: 600
+        post_reboot_delay: 30
+
+    - name: Promote to Domain Controller
+      microsoft.ad.domain:
+        dns_domain_name: "{{ domain_name }}"
+        domain_netbios_name: "{{ domain_netbios_name }}"
+        safe_mode_password: "{{ safe_mode_password }}"
+        state: domain_controller
+
+    - name: Reboot after domain promotion
+      ansible.windows.win_reboot:
+        msg: "Rebooting to complete domain promotion"
+        pre_reboot_delay: 15
+        reboot_timeout: 900
+        post_reboot_delay: 30
+
+    - name: Verify Domain Controller promotion
+      ansible.windows.win_shell: |
+        (Get-WmiObject Win32_ComputerSystem).DomainRole
+      register: domain_role_result
+
+    - name: Show domain role
+      debug:
+        msg: "Domain Role after promotion is: {{ domain_role_result.stdout }} (expected: 5 = PDC)"

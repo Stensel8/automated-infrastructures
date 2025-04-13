@@ -1,0 +1,12 @@
+---
+- name: Configure Web Servers
+  hosts: all
+  become: yes
+  roles:
+    - role: deploy-docker
+    - role: wordpress
+      when: website_type == "wordpress"
+    - role: joomla
+      when: website_type == "joomla"
+    - role: custom-website
+      when: website_type == "custom"

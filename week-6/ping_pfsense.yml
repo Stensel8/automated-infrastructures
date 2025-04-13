@@ -1,0 +1,7 @@
+---
+- name: Ping pfSense
+  hosts: pfsense
+  gather_facts: no
+  tasks:
+    - name: Test connectivity to pfSense
+      ansible.builtin.ping:

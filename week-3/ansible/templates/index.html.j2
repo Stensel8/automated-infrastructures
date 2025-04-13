@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome {{ customer_name }}</title>
+  <style>
+    body {
+      background-color: {{ background_color }};
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding-top: 60px;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #2a2a2a;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to {{ customer_name }}'s Web Portal</h1>
+  <p>This static website is automatically deployed via Ansible and Docker.</p>
+  <p>Environment: <strong>{{ environment }}</strong></p>
+  <footer>
+    &copy; Sten Tijhuis – 550600
+  </footer>
+</body>
+</html>

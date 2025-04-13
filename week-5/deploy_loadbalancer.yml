@@ -1,0 +1,10 @@
+---
+- name: Deploy loadbalancer for production environment
+  hosts: KlantB_Prod_1
+  become: true
+  vars:
+    webserver_ips:
+      - 54.83.227.72
+      - 54.158.207.170
+  roles:
+    - loadbalancer

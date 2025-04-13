@@ -1,0 +1,57 @@
+# This playbook performs the following tasks on a Windows 11 VM:
+# 1. Prompts for user input to create a new user with specified groups and password.
+# 2. Ensures the specified groups (finance, it, management) exist.
+# 3. Creates a user and assigns them to the specified groups.
+# 4. Creates a directory at C:\management.
+# 5. Generates a file in the directory using a Jinja2 template.
+# 6. Installs Git using Chocolatey.
+---
+- name: "Configure Windows 11 VM: Add User, Create Groups, and Install Git using Winget"
+  hosts: win11vm
+  gather_facts: yes
+  vars_prompt:
+    - name: username
+      prompt: "Enter the username"
+      private: no
+    - name: password
+      prompt: "Enter the password"
+      private: yes
+    - name: user_groups
+      prompt: "Enter the groups (users, finance, it, management) separated by commas"
+      private: no
+
+  tasks:
+    - name: Create required groups
+      ansible.windows.win_group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - finance
+        - it
+        - management
+
+    - name: Create user and assign to specified groups
+      ansible.windows.win_user:
+        name: "{{ username }}"
+        password: "{{ password }}"
+        groups: "{{ user_groups.split(',') | map('trim') | list }}"
+
+
+    - name: Create directory C:\management
+      ansible.windows.win_file:
+        state: directory
+        path: C:\management
+
+    - name: Generate a file from a Jinja2 template in C:\management
+      ansible.windows.win_template:
+        src: windows_template.j2
+        dest: C:\management\windows_file
+
+    - name: Install Git using Winget
+      ansible.windows.win_shell: >
+        winget install --id Git.Git --silent --accept-package-agreements --accept-source-agreements
+      register: winget_install_result
+
+    - name: Display Winget installation result
+      debug:
+        msg: "Winget output: {{ winget_install_result.stdout }}"

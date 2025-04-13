@@ -1,0 +1,7 @@
+---
+users:
+{% for line in csv_data %}
+  - firstname: {{ line[0] }}
+    lastname: {{ line[1] }}
+    password: {{ line[2] }}
+{% endfor %}

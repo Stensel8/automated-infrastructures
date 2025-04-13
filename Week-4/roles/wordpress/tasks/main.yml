@@ -1,0 +1,39 @@
+---
+# Start the MariaDB container for WordPress
+- name: Start MariaDB container for WordPress
+  community.docker.docker_container:
+    name: "{{ db_container }}"
+    image: "{{ mariadb_image }}"
+    state: started
+    restart_policy: always
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+      MYSQL_USER: "{{ db_user }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_DATABASE: "{{ db_name }}"
+    published_ports:
+      - "{{ mariadb_port }}:3306"  # Maps host port (3308) to container port (3306)
+    volumes:
+      - "/var/lib/{{ db_container }}:/var/lib/mysql"   # Persist database data
+
+# Start the WordPress container
+- name: Start WordPress container
+  community.docker.docker_container:
+    name: "{{ wp_container }}"
+    image: "{{ wordpress_image }}"
+    state: started
+    restart_policy: always
+    links:
+      - "{{ db_container }}:db"  # Link to the MariaDB container with alias "db"
+    env:
+      WORDPRESS_DB_HOST: "db:3306"          # Reference to the MariaDB container's internal port
+      WORDPRESS_DB_USER: "{{ db_user }}"
+      WORDPRESS_DB_PASSWORD: "{{ db_password }}"
+      WORDPRESS_DB_NAME: "{{ db_name }}"
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_SITEURL', 'http://{{ ansible_host }}' );
+        define( 'WP_HOME', 'http://{{ ansible_host }}' );
+    published_ports:
+      - "{{ wp_port }}:80"           # Maps host port (8081) to container port (80)
+    volumes:
+      - "/var/www/wordpress:/var/www/html"   # Persist WordPress website data

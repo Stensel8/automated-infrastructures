@@ -1,0 +1,37 @@
+---
+# Load Balancer Tasks
+
+- name: Ensure /etc/nginx/conf.d exists
+  ansible.builtin.file:
+    path: /etc/nginx/conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: yes
+
+- name: Install NGINX Mainline via custom installer script
+  ansible.builtin.shell: "curl -fsSL https://raw.githubusercontent.com/Stensel8/basic-scripts/refs/heads/main/nginx_mainline_installer.sh | sudo bash"
+  become: yes
+
+# Remove the default configuration after installation in case it gets recreated.
+- name: Remove default configuration if it exists
+  ansible.builtin.file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+  become: yes
+  ignore_errors: true
+
+- name: Deploy load balancer configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/conf.d/nginx.conf
+  notify: Restart loadbalancer
+  become: yes
+
+- name: Ensure NGINX is running and enabled
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  become: yes

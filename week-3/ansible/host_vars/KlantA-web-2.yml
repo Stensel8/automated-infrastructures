@@ -1,0 +1,6 @@
+role: joomla
+http_port: 80
+db_host: db
+db_user: joomla
+db_password: joomla_pw
+db_name: joomla

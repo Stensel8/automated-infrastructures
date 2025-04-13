@@ -1,0 +1,11 @@
+[windows_clients]
+win11vm ansible_host=192.168.64.133
+
+[windows:vars]
+ansible_user=sten
+ansible_password=P@ssw0rd
+ansible_connection=winrm
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
+ansible_port=5985
+ansible_winrm_scheme=http

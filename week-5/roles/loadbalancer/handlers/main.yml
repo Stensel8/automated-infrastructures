@@ -1,0 +1,5 @@
+---
+- name: Restart loadbalancer
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

@@ -1,0 +1,45 @@
+{% if groups['backend_servers'] | length > 0 %}
+upstream backend_servers {
+    ip_hash;
+{% for host in groups['backend_servers'] %}
+    server {{ hostvars[host].ansible_host }}:80;
+{% endfor %}
+}
+{% endif %}
+
+server {
+    listen 80;
+    server_name _;
+
+    # Health check endpoint
+    location /health {
+        default_type text/plain;
+        return 200 "Healthy\n";
+    }
+
+    location / {
+        {% if groups['backend_servers'] | length > 0 %}
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            
+            proxy_set_header Accept-Encoding "";
+            add_header X-Backend-Server $upstream_addr;
+            
+            sub_filter '</body>' '<div style="position:fixed;bottom:0;right:0;background-color:#000;color:#fff;padding:15px 20px;font-size:16px;border-top-left-radius:5px;z-index:9999;">Website served by: $upstream_addr</div></body>';
+            sub_filter_types text/html;
+            sub_filter_once on;
+        {% else %}
+            return 503;
+        {% endif %}
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+        if (!-f $request_filename) {
+            return 200 "Custom 50x error page not found\n";
+        }
+    }
+}

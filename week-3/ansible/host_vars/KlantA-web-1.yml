@@ -1,0 +1,6 @@
+role: wordpress
+http_port: 80
+db_host: db
+db_user: wordpress
+db_password: wordpress_pw
+db_name: wordpress

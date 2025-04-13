@@ -1,0 +1,16 @@
+---
+- name: Install Docker using custom script
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Run your Docker installation script from GitHub
+      ansible.builtin.shell: >
+        curl -fsSL https://raw.githubusercontent.com/Stensel8/basic-scripts/main/docker_installer.sh | bash
+      args:
+        executable: /bin/bash
+      register: result
+
+    - name: Show script output
+      debug:
+        var: result.stdout_lines

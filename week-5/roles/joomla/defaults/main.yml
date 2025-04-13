@@ -1,0 +1,19 @@
+---
+# Container Names and Image Versions for Joomla
+db_container: "joomla_db"            # Name for the MariaDB container used by Joomla
+joomla_container: "joomla_app"         # Name for the Joomla application container
+mariadb_image: "mariadb:11.7.2"        # MariaDB image version (same as WordPress)
+joomla_image: "joomla:latest"          # Joomla image (latest)
+
+# Database Settings for Joomla
+db_root_password: "your_root_password"   # Root password for MariaDB
+db_user: "joomla"                         # Database user for Joomla
+db_password: "your_joomla_password"       # Database password for Joomla
+db_name: "joomla"                         # Database name for Joomla
+
+# Port Settings
+mariadb_port: "3306"      # Host port mapping for the MariaDB container (container port remains 3306)
+joomla_port: "80"       # Host port mapping for the Joomla container (container port remains 80)
+
+# Required Docker Version
+required_docker: "27.3.1"

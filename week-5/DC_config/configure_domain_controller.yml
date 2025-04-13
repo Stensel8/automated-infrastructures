@@ -1,0 +1,31 @@
+# This playbook configures a Windows Server 2022 machine as a Domain Controller.
+# It installs the necessary Active Directory Domain Services feature,
+# promotes the server to a domain controller for the specified domain,
+# and reboots the server if the promotion process requires it.
+# The domain admin password is securely prompted from the user.
+---
+- name: Configure Windows Server 2025 as Domain Controller
+  hosts: windows_servers
+  gather_facts: no
+  vars_prompt:
+    - name: admin_password
+      prompt: "Enter domain admin password"
+      private: yes
+
+  tasks:
+    - name: Ensure required Windows features are installed
+      win_feature:
+        name:
+          - AD-Domain-Services
+        state: present
+
+    - name: Promote server to domain controller
+      win_domain:
+        dns_domain_name: Stensel.local
+        safe_mode_password: "{{ admin_password }}"
+      register: domain_result
+
+    - name: Reboot after domain promotion
+      win_reboot:
+        msg: "Rebooting to complete domain promotion"
+      when: domain_result.changed

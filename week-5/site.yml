@@ -1,0 +1,20 @@
+---
+# Playbook for configuring web servers and load balancers.
+
+- name: Configure Web Servers
+  hosts: webservers
+  become: yes
+  roles:
+    - role: deploy-docker
+    - role: wordpress
+      when: website_type == "wordpress"
+    - role: joomla
+      when: website_type == "joomla"
+    - role: custom-website
+      when: website_type == "custom"
+
+- name: Configure Load Balancer
+  hosts: loadbalancer
+  become: yes
+  roles:
+    - role: loadbalancer

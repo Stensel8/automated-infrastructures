@@ -1,0 +1,34 @@
+---
+- name: Install custom static site for a client
+  hosts: klantA_test:klantA_prod_web
+  become: true
+  gather_facts: true
+
+  vars_prompt:
+    - name: customer
+      prompt: "Enter customer name (e.g., KlantA)"
+      private: no
+
+  tasks:
+    - name: Install httpd package
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd service
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Deploy custom welcome page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>Welcome</title></head>
+          <body>
+            <h1>Welcome {{ customer }}!</h1>
+            <p>Good luck with your new platform.</p>
+          </body>
+          </html>

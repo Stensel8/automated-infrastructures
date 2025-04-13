@@ -1,0 +1,24 @@
+---
+- name: Deny FTP Traffic from LAN
+  hosts: pfsense
+  gather_facts: no
+  collections:
+    - pfsensible.core
+
+  vars:
+    pfsensible_url: "https://192.168.1.1/"
+    pfsensible_verify_ssl: false
+    pfsensible_username: "admin"
+    pfsensible_password: "pfsense"
+
+  tasks:
+    - name: Deny FTP traffic (TCP port 21) from LAN
+      pfsense_rule:
+        name: "Deny LAN FTP Traffic"
+        state: present
+        interface: lan
+        action: block
+        source: "192.168.1.0/24"
+        destination: any
+        protocol: tcp
+        destination_port: 21

@@ -1,0 +1,17 @@
+---
+- name: Create users in Active Directory
+  hosts: windows_servers
+  gather_facts: no
+  vars_files:
+    - users.yml
+
+  tasks:
+    - name: Create users
+      microsoft.ad.user:
+        name: "{{ item.firstname }}.{{ item.lastname }}"
+        password: "{{ item.password }}"
+        state: present
+        password_never_expires: no
+        user_cannot_change_password: no
+        password_expired: yes
+      loop: "{{ users }}"

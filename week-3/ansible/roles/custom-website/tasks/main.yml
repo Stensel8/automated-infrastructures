@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for custom-website
+- name: Create static index.html from template
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html

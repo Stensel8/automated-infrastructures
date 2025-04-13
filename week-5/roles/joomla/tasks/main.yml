@@ -1,0 +1,36 @@
+---
+# Start the MariaDB container for Joomla using the community.docker.docker_container module.
+- name: Start MariaDB container for Joomla
+  community.docker.docker_container:
+    name: "{{ db_container }}"
+    image: "{{ mariadb_image }}"
+    state: started
+    restart_policy: always
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+      MYSQL_USER: "{{ db_user }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_DATABASE: "{{ db_name }}"
+    published_ports:
+      - "{{ mariadb_port }}:3306"  # Host port : Container port mapping
+    volumes:
+      - "/var/lib/{{ db_container }}:/var/lib/mysql"   # Persist database data
+
+# Start the Joomla container using the MariaDB settings defined above.
+- name: Start Joomla container
+  community.docker.docker_container:
+    name: "{{ joomla_container }}"
+    image: "{{ joomla_image }}"
+    state: started
+    restart_policy: always
+    links:
+      - "{{ db_container }}:db"  # Link the Joomla container to the MariaDB container using alias "db"
+    env:
+      JOOMLA_DB_HOST: "db:3306"          # Reference MariaDB on container port 3306 via the alias
+      JOOMLA_DB_USER: "{{ db_user }}"
+      JOOMLA_DB_PASSWORD: "{{ db_password }}"
+      JOOMLA_DB_NAME: "{{ db_name }}"
+    published_ports:
+      - "{{ joomla_port }}:80"           # Host port : Container port mapping for Joomla's web server
+    volumes:
+      - "/var/www/joomla:/var/www/html"   # Persist Joomla website data

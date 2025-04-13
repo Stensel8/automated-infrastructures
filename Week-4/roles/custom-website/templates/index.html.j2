@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ klant_naam }} - Website</title>
+  <style>
+    /* Reset margins and use a flexible box layout for vertical centering */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: {{ kleur }};
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    /* Container for central content with a subtle translucent background */
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    /* Style for the main heading */
+    h1 {
+      margin-top: 0;
+      font-size: 2.5rem;
+    }
+    /* Style for the paragraph text */
+    p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Dynamic client name rendered using the variable from host_vars -->
+    <h1>Welcome to {{ klant_naam }}</h1>
+    <!-- Informational text about the website -->
+    <p>Your website is running on our robust infrastructure!</p>
+  </div>
+</body>
+</html>

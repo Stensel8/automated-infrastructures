@@ -1,0 +1,27 @@
+- name: Start MariaDB container
+  docker_container:
+    name: wordpress_db
+    image: mariadb:latest
+    env:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    state: started
+    restart_policy: always
+
+- name: Start WordPress container
+  docker_container:
+    name: wordpress_app
+    image: wordpress:latest
+    env:
+      WORDPRESS_DB_HOST: wordpress_db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    links:
+      - wordpress_db
+    ports:
+      - '80:80'
+    state: started
+    restart_policy: always

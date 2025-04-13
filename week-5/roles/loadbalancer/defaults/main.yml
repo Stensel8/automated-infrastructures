@@ -1,0 +1,8 @@
+---
+# Loadbalancer Defaults
+
+# Name of the inventory group containing backend servers to balance.
+backend_group: "backend_servers"
+
+# Port on which backend servers are listening (typically port 80 for HTTP).
+backend_port: "80"

@@ -1,0 +1,25 @@
+---
+- name: Convert CSV to YAML
+  hosts: localhost
+  gather_facts: false
+  vars:
+    csv_filename: users.csv
+    yaml_output_filename: converted_users.yml
+
+  tasks:
+    - name: Read CSV lines (excluding the header)
+      set_fact:
+        user_csv_lines: "{{ lookup('file', csv_filename).split('\n')[1:] }}"
+      # [1:] skips the first row if it has headers like 'firstname,lastname,password'
+
+    - name: Create structured data from CSV lines
+      set_fact:
+        user_list: "{{ user_csv_lines | map('split', ',') | list }}"
+      # Splits each line on commas
+
+    - name: Generate converted_users.yml from the template
+      template:
+        src: users.j2
+        dest: "{{ yaml_output_filename }}"
+      vars:
+        csv_data: "{{ user_list }}"

@@ -1,0 +1,40 @@
+# Make sure to have installed ansible-galaxy collection install pfsensible.core first before doing this.
+# This playbook configures pfSense firewall rules using the pfsensible Ansible collection.
+---
+- name: Customize pfSense firewall rules
+  hosts: pfsense
+  gather_facts: no
+  tasks:
+    - name: Remove the default LAN rule
+      pfsensible.core.pfsense_rule:
+        state: absent
+        rule_name: "Default allow LAN IPv4 to any rule"
+        interface: LAN
+      delegate_to: localhost
+
+    - name: Add firewall rule for HTTP/HTTPS traffic
+      pfsensible.core.pfsense_rule:
+        state: present
+        rule_name: "Allow LAN Web Traffic to WAN"
+        interface: LAN
+        direction: outbound
+        protocol: tcp
+        destination: any
+        destination_ports:
+          - 80
+          - 443
+        comment: "Allow HTTP/HTTPS traffic from LAN to WAN"
+      delegate_to: localhost
+
+    - name: Add firewall rule for DNS traffic
+      pfsensible.core.pfsense_rule:
+        state: present
+        rule_name: "Allow DNS Traffic"
+        interface: LAN
+        direction: outbound
+        protocol: udp
+        destination: any
+        destination_ports:
+          - 53
+        comment: "Allow DNS traffic from LAN to WAN"
+      delegate_to: localhost

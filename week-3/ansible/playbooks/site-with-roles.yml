@@ -1,0 +1,10 @@
+---
+- name: Deploy customer environment
+  hosts: klantA_all
+  become: true
+
+  tasks:
+    - name: Include correct role based on host/group var
+      include_role:
+        name: "{{ role }}"
+      when: role is defined

@@ -1,0 +1,14 @@
+---
+- name: Deploy stensel8/web-dev container
+  hosts: klantA_test_web
+  become: true
+
+  tasks:
+    - name: Run web-dev Docker container
+      community.docker.docker_container:
+        name: webdev_site
+        image: stensel8/web-dev
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:80"

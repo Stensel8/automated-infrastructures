@@ -1,0 +1,16 @@
+---
+- name: Configure Windows Server 2025 as Domain Controller
+  hosts: windows_dc
+  gather_facts: yes
+  vars_prompt:
+    - name: admin_password
+      prompt: "Enter Domain Admin Password:"
+      private: yes
+  vars:
+    domain_controller: true
+  tasks:
+    - name: Include Windows domain controller configuration
+      include_role:
+        name: windows
+      vars:
+        domain_controller: true

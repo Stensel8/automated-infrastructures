@@ -1,0 +1,17 @@
+---
+users:
+  - firstname: Sten
+    lastname: DeVries
+    password: SharedTest123!
+  - firstname: Finn
+    lastname: Bakker
+    password: SharedTest123!
+  - firstname: Tom
+    lastname: Willems
+    password: SharedTest123!
+  - firstname: Wout
+    lastname: Janssen
+    password: SharedTest123!
+  - firstname: Erik
+    lastname: Smits
+    password: SharedTest123!

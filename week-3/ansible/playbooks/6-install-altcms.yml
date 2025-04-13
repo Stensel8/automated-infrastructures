@@ -1,0 +1,12 @@
+- name: Deploy Ghost CMS
+  hosts: klantA_prod_web
+  become: true
+  tasks:
+    - name: Run Ghost container
+      community.docker.docker_container:
+        name: ghost_cms
+        image: ghost:latest
+        state: started
+        restart_policy: always
+        published_ports:
+          - "2368:2368"

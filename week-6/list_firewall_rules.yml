@@ -1,0 +1,43 @@
+---
+# list_firewall_rules.yml
+# Ansible playbook to list existing LAN and WAN firewall rules on pfSense.
+# This playbook uses the pfsense_aggregate module from pfsensible.core
+# to gather firewall rules. Instead of using unsupported parameters like
+# "interface" and "state", we now use "aggregated_rules" (an empty list to
+# indicate “all”) and "interface_filter" to filter rules for a specific
+# interface (e.g., "lan" or "wan").
+
+# This one is still in beta, so it may not work as expected. May print empty results or not work at all.
+
+- name: List pfSense LAN and WAN firewall rules
+  hosts: pfsense
+  gather_facts: no
+  collections:
+    - pfsensible.core
+
+  vars:
+    pfsensible_url: "{{ pfsensible_url | default('https://192.168.1.1/') }}"
+    pfsensible_verify_ssl: "{{ pfsensible_verify_ssl | default(false) }}"
+    pfsensible_username: "{{ pfsensible_username | default('admin') }}"
+    pfsensible_password: "{{ pfsensible_password | default('pfsense') }}"
+
+  tasks:
+    - name: Gather LAN firewall rules
+      pfsense_aggregate:
+        aggregated_rules: []      # An empty list gathers all firewall rules.
+        interface_filter: ["lan"] # Filter rules for the LAN interface.
+      register: lan_rules
+
+    - name: Display LAN firewall rules
+      debug:
+        var: lan_rules
+
+    - name: Gather WAN firewall rules
+      pfsense_aggregate:
+        aggregated_rules: []      # Gather all firewall rules.
+        interface_filter: ["wan"] # Filter rules for the WAN interface.
+      register: wan_rules
+
+    - name: Display WAN firewall rules
+      debug:
+        var: wan_rules

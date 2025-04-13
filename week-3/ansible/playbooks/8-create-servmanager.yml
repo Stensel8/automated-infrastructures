@@ -1,0 +1,43 @@
+---
+- name: Create admin user 'servmanager' with plaintext password (⚠️ NOT SECURE)
+  hosts: klantA_prod_web:klantA_prod_lb
+  become: true
+
+  vars_prompt:
+    - name: plain_password
+      prompt: "Enter the password for user 'servmanager' (⚠️ plaintext)"
+      private: yes
+
+  tasks:
+    - name: Create the 'servmanager' user with a plaintext password
+      user:
+        name: servmanager
+        comment: "Service Manager Account"
+        shell: /bin/bash
+        groups: wheel
+        append: yes
+        password: "{{ plain_password }}"
+        update_password: always
+
+    - name: Ensure home directory for servmanager exists
+      file:
+        path: /home/servmanager
+        state: directory
+        owner: servmanager
+        group: servmanager
+        mode: '0755'
+
+    - name: Allow 'wheel' group to use sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+# -----------------------------------------------------------------------------------
+# ⚠️ WARNING:
+# This playbook uses a plaintext password. This is not secure and not recommended.
+# Consider switching to a hashed password (e.g., using password_hash with passlib)
+# in production environments or public-facing systems.
+# -----------------------------------------------------------------------------------

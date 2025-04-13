@@ -1,0 +1,30 @@
+---
+# Install and configure NGINX for serving the custom website
+
+- name: Install NGINX package
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  # Ensures NGINX is installed on the target server
+
+- name: Start and enable NGINX service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  # Starts NGINX and ensures it will start at boot
+
+- name: Create web content directory
+  ansible.builtin.file:
+    path: /usr/share/nginx/html
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  # Creates the directory for serving web content if it doesn't already exist
+
+- name: Deploy custom index.html template
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+  # Renders and places a custom index.html using variables defined in host_vars or group_vars

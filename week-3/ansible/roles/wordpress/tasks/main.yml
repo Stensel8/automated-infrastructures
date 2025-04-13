@@ -1,0 +1,20 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for wordpress
+- name: Install Docker (include role if not already done)
+  include_role:
+    name: deploy-docker
+
+- name: Run WordPress container
+  community.docker.docker_container:
+    name: wordpress
+    image: wordpress:php8.4-apache
+    state: started
+    restart_policy: always
+    env:
+      WORDPRESS_DB_HOST: "{{ db_host }}"
+      WORDPRESS_DB_USER: "{{ db_user }}"
+      WORDPRESS_DB_PASSWORD: "{{ db_password }}"
+      WORDPRESS_DB_NAME: "{{ db_name }}"
+    published_ports:
+      - "{{ http_port }}:80"

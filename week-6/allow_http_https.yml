@@ -1,0 +1,35 @@
+---
+- name: Allow HTTP/HTTPS Traffic from LAN to WAN
+  hosts: pfsense
+  gather_facts: no
+  collections:
+    - pfsensible.core
+
+  vars:
+    pfsensible_url: "https://192.168.1.1/"
+    pfsensible_verify_ssl: false
+    pfsensible_username: "admin"
+    pfsensible_password: "pfsense"
+
+  tasks:
+    - name: Allow HTTP traffic from LAN to WAN
+      pfsense_rule:
+        name: "Allow LAN HTTP Traffic to WAN"
+        state: present
+        interface: lan
+        action: pass
+        source: "192.168.1.0/24"    # Adjust to your LAN network
+        destination: any
+        protocol: tcp
+        destination_port: 80
+
+    - name: Allow HTTPS traffic from LAN to WAN
+      pfsense_rule:
+        name: "Allow LAN HTTPS Traffic to WAN"
+        state: present
+        interface: lan
+        action: pass
+        source: "192.168.1.0/24"
+        destination: any
+        protocol: tcp
+        destination_port: 443

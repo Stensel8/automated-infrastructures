@@ -1,0 +1,19 @@
+---
+# Container Names and Image Versions for WordPress
+db_container: "wordpress_db"            # Name for the MariaDB container used by WordPress
+wp_container: "wordpress_app"            # Name for the WordPress application container
+mariadb_image: "mariadb:11.7.2"          # MariaDB image version (same as Joomla)
+wordpress_image: "wordpress:php8.4-apache" # WordPress image version
+
+# Database Settings for WordPress
+db_root_password: "your_root_password"   # Root password for MariaDB
+db_user: "wordpress"                     # Database user for WordPress
+db_password: "your_wordpress_password"   # Database password for WordPress
+db_name: "wordpress"                     # Database name for WordPress
+
+# Port Settings (non-conflicting with Joomla)
+mariadb_port: "3306"   # Host port mapping for the MariaDB container (container port remains 3306)
+wp_port: "80"        # Host port mapping for the WordPress container (container port remains 80)
+
+# Required Docker Version
+required_docker: "27.3.1"

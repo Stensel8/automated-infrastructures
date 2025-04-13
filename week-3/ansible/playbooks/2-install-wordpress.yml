@@ -1,0 +1,100 @@
+---
+- name: Deploy WordPress and its Database using Docker
+  hosts: klantA_prod_web
+  become: true
+  vars:
+    # Container names and image versions
+    docker_db_container: "wordpress_db"
+    docker_wordpress_container: "wordpress_app"
+    mariadb_image: "mariadb:11.7.2"         # Use a specific tag if needed
+    wordpress_image: "wordpress:php8.4-apache"
+    # Database credentials and settings
+    db_root_password: "your_root_password"
+    db_user: "wordpress"
+    db_password: "your_wordpress_password"
+    db_name: "wordpress"
+    mariadb_port: "3306"
+    wordpress_http_port: "80"
+    # Define the minimum required Docker version (adjust as needed)
+    required_docker_version: "27.3.1"
+
+  tasks:
+    - name: Install pip if not already installed
+      ansible.builtin.package:
+        name: python3-pip
+        state: present
+
+    - name: Install Python package 'requests' for Docker interactions
+      ansible.builtin.pip:
+        name: requests
+        state: present
+
+    - name: Check if Docker is installed and get its server version
+      # Escaping the Docker format string so that Jinja2 doesn't process it
+      command: "docker version --format '{{ '{{' }}.Server.Version{{ '}}' }}'"
+      register: docker_version
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Show installed Docker version
+      debug:
+        msg: "Installed Docker version: {{ docker_version.stdout | default('not installed') }}"
+
+    - name: Install Docker if not installed or version is older than required
+      shell: curl -fsSL https://raw.githubusercontent.com/Stensel8/basic-scripts/refs/heads/main/docker_installer.sh | sudo bash
+      when: docker_version.rc != 0 or (docker_version.stdout is version(required_docker_version, '<'))
+      notify: Restart Docker
+
+    - name: Wait for Docker to be available after installation
+      command: docker info
+      register: docker_info
+      retries: 5
+      delay: 3
+      until: docker_info.rc == 0
+      changed_when: false
+
+    - name: Ensure Docker service is started and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Deploy MariaDB container for WordPress
+      community.docker.docker_container:
+        name: "{{ docker_db_container }}"
+        image: "{{ mariadb_image }}"
+        state: started
+        restart_policy: always
+        env:
+          MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+          MYSQL_USER: "{{ db_user }}"
+          MYSQL_PASSWORD: "{{ db_password }}"
+          MYSQL_DATABASE: "{{ db_name }}"
+        published_ports:
+          - "{{ mariadb_port }}:{{ mariadb_port }}"
+        volumes:
+          - "/var/lib/{{ docker_db_container }}:/var/lib/mysql"
+
+    - name: Deploy WordPress container
+      community.docker.docker_container:
+        name: "{{ docker_wordpress_container }}"
+        image: "{{ wordpress_image }}"
+        state: started
+        restart_policy: always
+        links:
+          - "{{ docker_db_container }}:db"
+        env:
+          WORDPRESS_DB_HOST: "db:{{ mariadb_port }}"
+          WORDPRESS_DB_USER: "{{ db_user }}"
+          WORDPRESS_DB_PASSWORD: "{{ db_password }}"
+          WORDPRESS_DB_NAME: "{{ db_name }}"
+        published_ports:
+          - "{{ wordpress_http_port }}:80"
+        volumes:
+          - "/var/www/wordpress:/var/www/html"
+
+  handlers:
+    - name: Restart Docker
+      ansible.builtin.service:
+        name: docker
+        state: restarted

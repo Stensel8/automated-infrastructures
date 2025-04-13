@@ -1,0 +1,12 @@
+- name: Maak webmap aan
+  file:
+    path: /var/www/html
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Plaats aangepaste index.html
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
