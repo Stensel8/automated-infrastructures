@@ -27,7 +27,7 @@ Each week focuses on different technologies and goals:
 - Public Subnet, Security Groups
 - Simple EC2 Instance
 
-### Week 2 - "Modular Magic"
+### Week 2 - "Modularity"
 - Refactor code into reusable **Terraform modules**
 - Add `variables.tf`, `outputs.tf`, and dynamic config structure
 
@@ -47,7 +47,7 @@ Each week focuses on different technologies and goals:
 - Configure **Windows 10** and **Server 2022** with Ansible
 - Manage AD users via YAML/CSV and interact with PFSense
 
-### Week 7 - "Azure & Bicep: The Bonus Round"
+### Week 7 - "Azure & Bicep"
 - Deploy to **Azure** using **Bicep**
 - Compare IAC tools and write deployment advice
 
