@@ -69,13 +69,6 @@ ansible.cfg
 .vscode/
 
 # -------------------------
-# Windows 11 (OS specific files)
-# -------------------------
-# Ignore Windows-specific files
-Thumbs.db
-Desktop.ini
-
-# -------------------------
 # Temporary/Backup Files
 # -------------------------
 # Ignore temp, swap, or backup files

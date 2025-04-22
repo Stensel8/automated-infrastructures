@@ -112,6 +112,7 @@ klantC/prod/   # Joomla setup
 # Using winget on Windows
 winget install -e --id Amazon.AWSCLI
 winget install -e --id Hashicorp.Terraform
+winget install -e --id Microsoft.Bicep
 ```
 
 ### Set AWS Credentials
@@ -180,15 +181,6 @@ After applying, connect to a created instance using the public IP address:
 ```powershell
 ssh -i .\.ssh\awskey ec2-user@<PUBLIC_IP>
 ```
-
-Example output:
-
-```bash
-ssh -i .\.ssh\awskey ec2-user@ip-address
-...
-Amazon Linux 2023
-```
-
 ---
 
 ## ⚙️ Customization
