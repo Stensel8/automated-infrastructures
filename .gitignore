@@ -1,3 +1,6 @@
+# -------------------------
+# Terraform
+# -------------------------
 # Ignore Terraform working directory
 .terraform/
 
@@ -10,7 +13,8 @@
 crash.log
 
 # Ignore variable files containing secrets
-Still need to add these. Haven't done yet.
+*.tfvars
+*.tfvars.json
 
 # Ignore plan output
 terraform.tfplan
@@ -24,3 +28,59 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# -------------------------
+# Bicep
+# -------------------------
+# Ignore Bicep build artifacts
+.bicep/
+
+# Ignore Bicep compilation output files
+*.json
+
+# -------------------------
+# Ansible
+# -------------------------
+# Ignore Ansible Vault files (contains secrets)
+*.vault
+*.vlt
+
+# Ignore Ansible configuration files
+ansible.cfg
+*.retry
+*.yml*
+
+# -------------------------
+# AWS (Amazon Web Services)
+# -------------------------
+# AWS config and credential files (may contain secrets)
+.aws/
+
+# -------------------------
+# Azure
+# -------------------------
+# Azure CLI configuration
+.azure/
+
+# -------------------------
+# Visual Studio Code
+# -------------------------
+# Ignore VS Code workspace settings and temp files
+.vscode/
+
+# -------------------------
+# Windows 11 (OS specific files)
+# -------------------------
+# Ignore Windows-specific files
+Thumbs.db
+Desktop.ini
+
+# -------------------------
+# Temporary/Backup Files
+# -------------------------
+# Ignore temp, swap, or backup files
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn

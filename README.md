@@ -199,18 +199,7 @@ You can override any variable by:
 
 ---
 
-## 👥 Collaboration Guidelines
-
-Be sure to `.gitignore`:
-
-```
-.terraform/
-terraform.tfstate*
-terraform.tfvars
-*.pem
-```
-
-Each teammate must:
+Each user must:
 - Generate their own key
 - Set `TF_VAR_user_home` and `TF_VAR_public_key_path`
 - Never commit credentials
