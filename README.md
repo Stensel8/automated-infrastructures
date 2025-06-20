@@ -67,16 +67,16 @@ Workloads can be:
 ---
 
 ## 🧰 Technologies Used
-
+-----------------------------------------------------------
 | Tech         | Purpose                                  |
-|--------------|-------------------------------------------|
+|--------------|------------------------------------------|
 | Terraform    | Provision AWS infrastructure             |
 | Ansible      | Configure servers & deploy containers    |
 | Docker       | Containerize workloads (CMS/static sites)|
 | Bicep        | Deploy Azure workloads (Week 7)          |
 | AWS          | Cloud provider for infrastructure        |
 | YAML/CSV     | Manage users (AD setup)                  |
-
+-----------------------------------------------------------
 ---
 
 ## 📁 Project Structure
