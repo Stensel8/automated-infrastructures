@@ -37,6 +37,7 @@ terraform.rc
 
 # Ignore Bicep compilation output files
 *.json
+!renovate.json
 
 # -------------------------
 # Ansible
@@ -49,6 +50,8 @@ terraform.rc
 ansible.cfg
 *.retry
 *.yml*
+!.github/
+!.github/**
 
 # -------------------------
 # AWS (Amazon Web Services)
