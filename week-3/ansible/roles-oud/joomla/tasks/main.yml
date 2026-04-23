@@ -1,7 +1,7 @@
 - name: Start MySQL container
   docker_container:
     name: mysql
-    image: mysql:9.6.0
+    image: mysql:9.7.0
     env:
       MYSQL_ROOT_PASSWORD: mysecretpassword
       MYSQL_DATABASE: joomla
